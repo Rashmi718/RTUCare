@@ -1,4 +1,4 @@
-package com.rtucare.backend.DTO;
+package com.rtucare.backend.DTO.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

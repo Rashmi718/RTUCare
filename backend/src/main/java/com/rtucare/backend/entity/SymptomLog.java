@@ -32,7 +32,6 @@ public class SymptomLog {
     private LocalDate date;
 
     private String symptom;
-
     private Integer severity;
 
     private String mood;

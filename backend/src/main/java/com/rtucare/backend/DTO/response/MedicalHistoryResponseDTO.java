@@ -1,4 +1,4 @@
-package com.rtucare.backend.DTO;
+package com.rtucare.backend.DTO.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,17 +11,12 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MedicalHistoryDTO {
+public class MedicalHistoryResponseDTO {
 
     private Long id;
-
     private Long userId;
-
     private Boolean smoker;
-
     private Boolean alcoholConsumer;
-
     private List<String> diseases;
-
-    private List<MedicationDTO> medications;
+    private List<MedicationResponseDTO> medications;
 }

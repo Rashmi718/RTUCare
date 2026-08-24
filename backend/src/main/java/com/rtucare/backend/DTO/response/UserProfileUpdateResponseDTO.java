@@ -1,4 +1,4 @@
-package com.rtucare.backend.DTO;
+package com.rtucare.backend.DTO.response;
 
 import com.rtucare.backend.enums.HeightUnit;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserProfileDTO {
+public class UserProfileUpdateResponseDTO {
 
     private Long id;
     private Long userId;

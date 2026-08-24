@@ -31,7 +31,7 @@ public class MedicalHistory {
     private Boolean alcoholConsumer;
 
     @ElementCollection
-    @CollectionTable(name = "medical_history_diseases", joinColumns = @JoinColumn(name = "medical_history_id"))
+    @CollectionTable(name = "user_medical_history", joinColumns = @JoinColumn(name = "medical_history_id"))
     @Column(name = "disease", nullable = false)
     private List<String> diseases;
 

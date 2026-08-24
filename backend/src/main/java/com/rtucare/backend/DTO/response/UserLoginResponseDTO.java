@@ -1,4 +1,4 @@
-package com.rtucare.backend.DTO;
+package com.rtucare.backend.DTO.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,10 +9,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRegisterDTO {
+public class UserLoginResponseDTO {
 
     private Long id;
     private String name;
     private String email;
-    private String password;
+    private String message;
 }

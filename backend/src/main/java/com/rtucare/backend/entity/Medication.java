@@ -21,7 +21,6 @@ public class Medication {
     @ManyToOne
     @JoinColumn(name = "medical_history_id")
     private MedicalHistory medicalHistory;
-
     private String name;
     private String dosage;
     private Integer durationMonths;

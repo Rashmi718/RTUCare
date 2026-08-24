@@ -1,4 +1,4 @@
-package com.rtucare.backend.DTO;
+package com.rtucare.backend.DTO.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,8 +9,15 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserResponseDTO {
+public class MedicationResponseDTO {
+
     private Long id;
+
+    private Long medicalHistoryId;
+
     private String name;
-    private String email;
+
+    private String dosage;
+
+    private Integer durationMonths;
 }
