@@ -1,5 +1,6 @@
 package com.rtucare.backend.config;
 
+import com.rtucare.backend.filter.JwtAuthFilter;
 import com.rtucare.backend.security.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,14 +11,17 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
+    private final JwtAuthFilter jwtAuthFilter;
 
-    public SecurityConfig(CustomUserDetailsService customUserDetailsService) {
+    public SecurityConfig(CustomUserDetailsService customUserDetailsService, JwtAuthFilter jwtAuthFilter) {
         this.customUserDetailsService = customUserDetailsService;
+        this.jwtAuthFilter = jwtAuthFilter;
     }
 
     @Bean
@@ -45,7 +49,8 @@ public class SecurityConfig {
                         .requestMatchers("/rtucare/signup", "/rtucare/login").permitAll()
                         .anyRequest().authenticated()
                 )
-                .authenticationProvider(authProvider);
+                .authenticationProvider(authProvider)
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

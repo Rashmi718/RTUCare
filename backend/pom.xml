@@ -95,6 +95,9 @@
 			<version>0.13.0</version>
 			<scope>runtime</scope>
 		</dependency>
+
+		<!-- SLF4J + Logback (included transitively by spring-boot-starter-webmvc) -->
+
 	</dependencies>
 
 

@@ -47,7 +47,7 @@ public class UserService {
             throw new InvalidCredentialsException("Invalid email or password");
         }
         logger.info("User logged in successfully: {}", dto.getEmail());
-        return new UserLoginResponseDTO(u.getId(), u.getName(), u.getEmail(), "Login successful");
+        return new UserLoginResponseDTO(u.getId(), u.getName(), u.getEmail(), null, "Login successful");
     }
 
     public void updateUser(long id, UserRegisterDTO dto) {
