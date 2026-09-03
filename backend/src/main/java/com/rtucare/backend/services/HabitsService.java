@@ -8,13 +8,15 @@ import com.rtucare.backend.exception.DuplicateResourceException;
 import com.rtucare.backend.exception.ResourceNotFoundException;
 import com.rtucare.backend.repository.HabitsRepository;
 import com.rtucare.backend.repository.UserProfileRepository;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Slf4j
 @Service
 public class HabitsService {
+
+    private static final Logger logger = LoggerFactory.getLogger(HabitsService.class);
 
     private final HabitsRepository habitsRepository;
     private final UserProfileRepository userProfileRepository;
@@ -26,7 +28,7 @@ public class HabitsService {
 
     @Transactional
     public HabitsResponseDTO createHabits(long userId, HabitsRequestDTO dto) {
-        log.info("Creating habits for user id: {}", userId);
+        logger.info("Creating habits for user id: {}", userId);
         UserProfile userProfile = userProfileRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Profile not found for user id: " + userId));
 
@@ -44,7 +46,7 @@ public class HabitsService {
         habits.setConsumeExcessiveDrugs(dto.getConsumeExcessiveDrugs());
 
         Habits saved = habitsRepository.save(habits);
-        log.info("Habits created successfully with id: {}", saved.getId());
+        logger.info("Habits created successfully with id: {}", saved.getId());
         return toDTO(saved);
     }
 
@@ -58,7 +60,7 @@ public class HabitsService {
 
     @Transactional
     public HabitsResponseDTO updateHabits(long userId, HabitsRequestDTO dto) {
-        log.info("Updating habits for user id: {}", userId);
+        logger.info("Updating habits for user id: {}", userId);
         UserProfile userProfile = userProfileRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Profile not found for user id: " + userId));
         Habits habits = habitsRepository.findByUserProfileId(userProfile.getId())
@@ -72,7 +74,7 @@ public class HabitsService {
         habits.setConsumeExcessiveDrugs(dto.getConsumeExcessiveDrugs());
 
         Habits updated = habitsRepository.save(habits);
-        log.info("Habits updated successfully with id: {}", updated.getId());
+        logger.info("Habits updated successfully with id: {}", updated.getId());
         return toDTO(updated);
     }
 

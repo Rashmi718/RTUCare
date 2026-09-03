@@ -11,15 +11,17 @@ import com.rtucare.backend.exception.ResourceNotFoundException;
 import com.rtucare.backend.repository.PeriodRepository;
 import com.rtucare.backend.repository.SymptomLogRepository;
 import com.rtucare.backend.repository.UserProfileRepository;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Slf4j
 @Service
 public class PeriodService {
+
+    private static final Logger logger = LoggerFactory.getLogger(PeriodService.class);
 
     private final PeriodRepository periodRepository;
     private final SymptomLogRepository symptomLogRepository;
@@ -33,7 +35,7 @@ public class PeriodService {
     }
 
     public PeriodDTO createPeriod(long userId, PeriodRequestDTO dto) {
-        log.info("Creating period for user id: {}", userId);
+        logger.info("Creating period for user id: {}", userId);
         UserProfile userProfile = userProfileRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Profile not found for user id: " + userId));
 
@@ -46,7 +48,7 @@ public class PeriodService {
         period.setNotes(dto.getNotes());
 
         PeriodDTO result = toDTO(periodRepository.save(period));
-        log.info("Period created successfully with id: {}", result.getId());
+        logger.info("Period created successfully with id: {}", result.getId());
         return result;
     }
 
@@ -61,7 +63,7 @@ public class PeriodService {
     }
 
     public PeriodDTO updatePeriod(long id, PeriodRequestDTO dto) {
-        log.info("Updating period with id: {}", id);
+        logger.info("Updating period with id: {}", id);
         Period period = findPeriod(id);
 
         period.setStartDate(dto.getStartDate());
@@ -76,15 +78,15 @@ public class PeriodService {
     }
 
     public void deletePeriod(long id) {
-        log.info("Deleting period with id: {}", id);
+        logger.info("Deleting period with id: {}", id);
         Period period = findPeriod(id);
         symptomLogRepository.deleteAll(symptomLogRepository.findByPeriodId(id));
         periodRepository.delete(period);
-        log.info("Period deleted successfully with id: {}", id);
+        logger.info("Period deleted successfully with id: {}", id);
     }
 
     public SymptomLogDTO addSymptom(long periodId, SymptomLogRequestDTO dto) {
-        log.info("Adding symptom to period id: {}", periodId);
+        logger.info("Adding symptom to period id: {}", periodId);
         Period period = findPeriod(periodId);
 
         SymptomLog symptomLog = new SymptomLog();
@@ -97,7 +99,7 @@ public class PeriodService {
         symptomLog.setNotes(dto.getNotes());
 
         SymptomLogDTO result = toSymptomDTO(symptomLogRepository.save(symptomLog));
-        log.info("Symptom added successfully with id: {}", result.getId());
+        logger.info("Symptom added successfully with id: {}", result.getId());
         return result;
     }
 
@@ -107,7 +109,7 @@ public class PeriodService {
     }
 
     public SymptomLogDTO updateSymptom(long symptomId, SymptomLogRequestDTO dto) {
-        log.info("Updating symptom with id: {}", symptomId);
+        logger.info("Updating symptom with id: {}", symptomId);
         SymptomLog symptomLog = symptomLogRepository.findById(symptomId)
                 .orElseThrow(() -> new ResourceNotFoundException("Symptom log not found with id: " + symptomId));
 
@@ -124,9 +126,9 @@ public class PeriodService {
         if (!symptomLogRepository.existsById(symptomId)) {
             throw new ResourceNotFoundException("Symptom log not found with id: " + symptomId);
         }
-        log.info("Deleting symptom with id: {}", symptomId);
+        logger.info("Deleting symptom with id: {}", symptomId);
         symptomLogRepository.deleteById(symptomId);
-        log.info("Symptom deleted successfully with id: {}", symptomId);
+        logger.info("Symptom deleted successfully with id: {}", symptomId);
     }
 
     private Period findPeriod(long id) {
