@@ -1,8 +1,7 @@
 package com.rtucare.backend.exception;
 
 import com.rtucare.backend.DTO.response.ErrorResponseDTO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -17,15 +16,14 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
-    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponseDTO> handleResourceNotFound(ResourceNotFoundException ex,
                                                                    WebRequest request) {
-        logger.error("Resource not found: {}", ex.getMessage());
+        log.error("Resource not found: {}", ex.getMessage());
         ErrorResponseDTO dto = ex.getErrorResponseDTO();
         dto.setPath(getPath(request));
         return ResponseEntity.status(dto.getStatus()).body(dto);
@@ -34,7 +32,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DuplicateResourceException.class)
     public ResponseEntity<ErrorResponseDTO> handleDuplicateResource(DuplicateResourceException ex,
                                                                      WebRequest request) {
-        logger.error("Duplicate resource: {}", ex.getMessage());
+        log.error("Duplicate resource: {}", ex.getMessage());
         ErrorResponseDTO dto = ex.getErrorResponseDTO();
         dto.setPath(getPath(request));
         return ResponseEntity.status(dto.getStatus()).body(dto);
@@ -43,7 +41,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidCredentialsException.class)
     public ResponseEntity<ErrorResponseDTO> handleInvalidCredentials(InvalidCredentialsException ex,
                                                                       WebRequest request) {
-        logger.error("Invalid credentials: {}", ex.getMessage());
+        log.error("Invalid credentials: {}", ex.getMessage());
         ErrorResponseDTO dto = ex.getErrorResponseDTO();
         dto.setPath(getPath(request));
         return ResponseEntity.status(dto.getStatus()).body(dto);
@@ -52,7 +50,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ErrorResponseDTO> handleBadRequest(BadRequestException ex,
                                                               WebRequest request) {
-        logger.error("Bad request: {}", ex.getMessage());
+        log.error("Bad request: {}", ex.getMessage());
         ErrorResponseDTO dto = ex.getErrorResponseDTO();
         dto.setPath(getPath(request));
         return ResponseEntity.status(dto.getStatus()).body(dto);
@@ -61,7 +59,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponseDTO> handleValidation(MethodArgumentNotValidException ex,
                                                               WebRequest request) {
-        logger.error("Validation failed: {}", ex.getMessage());
+        log.error("Validation failed: {}", ex.getMessage());
 
         Map<String, String> validationErrors = new HashMap<>();
         for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
@@ -82,7 +80,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ErrorResponseDTO> handleAuthentication(AuthenticationException ex,
                                                                   WebRequest request) {
-        logger.error("Authentication failed: {}", ex.getMessage());
+        log.error("Authentication failed: {}", ex.getMessage());
 
         ErrorResponseDTO dto = new ErrorResponseDTO();
         dto.setStatus(HttpStatus.UNAUTHORIZED.value());
@@ -96,7 +94,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDTO> handleGeneric(Exception ex, WebRequest request) {
-        logger.error("Unexpected error occurred", ex);
+        log.error("Unexpected error occurred", ex);
 
         ErrorResponseDTO dto = new ErrorResponseDTO();
         dto.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());

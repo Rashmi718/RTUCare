@@ -14,18 +14,16 @@ import com.rtucare.backend.exception.DuplicateResourceException;
 import com.rtucare.backend.exception.ResourceNotFoundException;
 import com.rtucare.backend.repository.MedicalHistoryRepository;
 import com.rtucare.backend.repository.UserProfileRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 public class MedicalHistoryService {
-
-    private static final Logger logger = LoggerFactory.getLogger(MedicalHistoryService.class);
 
     private final MedicalHistoryRepository medicalHistoryRepository;
     private final UserProfileRepository userProfileRepository;
@@ -37,7 +35,7 @@ public class MedicalHistoryService {
 
     @Transactional
     public MedicalHistoryResponseDTO createMedicalHistory(long userId, MedicalHistoryRequestDTO dto) {
-        logger.info("Creating medical history for user id: {}", userId);
+        log.info("Creating medical history for user id: {}", userId);
         UserProfile userProfile = userProfileRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Profile not found for user id: " + userId));
 
@@ -55,7 +53,7 @@ public class MedicalHistoryService {
         }
 
         MedicalHistoryResponseDTO result = toDTO(medicalHistoryRepository.save(medicalHistory));
-        logger.info("Medical history created successfully with id: {}", result.getId());
+        log.info("Medical history created successfully with id: {}", result.getId());
         return result;
     }
 
@@ -67,7 +65,7 @@ public class MedicalHistoryService {
 
     @Transactional
     public MedicalHistoryResponseDTO updateMedicalHistory(long userId, MedicalHistoryRequestDTO dto) {
-        logger.info("Updating medical history for user id: {}", userId);
+        log.info("Updating medical history for user id: {}", userId);
         MedicalHistory medicalHistory = medicalHistoryRepository.findByUserProfileUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Medical history not found for user id: " + userId));
 
@@ -99,7 +97,7 @@ public class MedicalHistoryService {
         }
 
         MedicalHistoryResponseDTO result = toDTO(medicalHistoryRepository.save(medicalHistory));
-        logger.info("Medical history updated successfully with id: {}", result.getId());
+        log.info("Medical history updated successfully with id: {}", result.getId());
         return result;
     }
 

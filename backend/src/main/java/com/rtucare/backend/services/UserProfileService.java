@@ -12,15 +12,13 @@ import com.rtucare.backend.enums.HeightUnit;
 import com.rtucare.backend.exception.ResourceNotFoundException;
 import com.rtucare.backend.repository.UserProfileRepository;
 import com.rtucare.backend.repository.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import com.rtucare.backend.entity.User;
 
+@Slf4j
 @Service
 public class UserProfileService {
-
-    private static final Logger logger = LoggerFactory.getLogger(UserProfileService.class);
 
     private static final double CM_PER_FT = 30.48;
 
@@ -36,7 +34,7 @@ public class UserProfileService {
     }
 
     public UserProfileResponseDTO createProfile(long id, UserProfileRequestDTO dto) {
-        logger.info("Creating profile for user id: {}", id);
+        log.info("Creating profile for user id: {}", id);
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
 
@@ -53,7 +51,7 @@ public class UserProfileService {
         userProfile.setPhysicalStatus(physicalStatus);
 
         UserProfile saved = userProfileRepository.save(userProfile);
-        logger.info("Profile created successfully with id: {}", saved.getId());
+        log.info("Profile created successfully with id: {}", saved.getId());
         return toDTO(saved);
     }
 
@@ -86,7 +84,7 @@ public class UserProfileService {
     }
 
     public UserProfileUpdateResponseDTO updateProfile(long userId, UserProfileUpdateDTO dto) {
-        logger.info("Updating profile for user id: {}", userId);
+        log.info("Updating profile for user id: {}", userId);
         UserProfile userProfile = userProfileRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Profile not found for user id: " + userId));
 
@@ -104,7 +102,7 @@ public class UserProfileService {
         physicalStatus.setLocation(dto.getLocation());
 
         UserProfile updated = userProfileRepository.save(userProfile);
-        logger.info("Profile updated successfully with id: {}", updated.getId());
+        log.info("Profile updated successfully with id: {}", updated.getId());
         return toUpdateDTO(updated);
     }
 

@@ -4,8 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -14,11 +13,14 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 @Service
 public class JwtService {
 
-    private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
+    private final Set<String> tokenBlacklist = ConcurrentHashMap.newKeySet();
 
     @Value("${jwt.secret}")
     private String secret;
@@ -27,7 +29,7 @@ public class JwtService {
     private long expiration;
 
     public String generateToken(String email){
-        logger.debug("Generating JWT token for email: {}", email);
+        log.debug("Generating JWT token for email: {}", email);
         Map<String, Object> claims = new HashMap<>();
         return createToken(claims , email);
     }
@@ -73,7 +75,26 @@ public class JwtService {
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
+        if (isBlacklisted(token)) {
+            return false;
+        }
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    }
+
+    public boolean isTokenValid(String token) {
+        try {
+            return !isTokenExpired(token) && !isBlacklisted(token);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public void blacklist(String token) {
+        tokenBlacklist.add(token);
+    }
+
+    public boolean isBlacklisted(String token) {
+        return tokenBlacklist.contains(token);
     }
 }

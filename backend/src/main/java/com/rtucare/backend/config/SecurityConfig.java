@@ -46,7 +46,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/rtucare/signup", "/rtucare/login").permitAll()
+                        .requestMatchers("/rtucare/signup", "/rtucare/login", "/rtucare/refresh", "/rtucare/logout").permitAll()
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authProvider)
