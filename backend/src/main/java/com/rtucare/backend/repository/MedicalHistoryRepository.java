@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface MedicalHistoryRepository extends JpaRepository<MedicalHistory, Long> {
 
-    Optional<MedicalHistory> findByUserId(Long userId);
+    Optional<MedicalHistory> findByUserProfileUserId(Long userId);
 }

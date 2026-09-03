@@ -1,12 +1,13 @@
 package com.rtucare.backend.entity;
 
-import com.rtucare.backend.enums.HeightUnit;
 import jakarta.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Table(name = "user_profiles")
@@ -24,14 +25,17 @@ public class UserProfile {
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
-    private Double heightCm;
+    @OneToOne(mappedBy = "userProfile", cascade = CascadeType.ALL, orphanRemoval = true)
+    private PhysicalStatus physicalStatus;
 
-    @Enumerated(EnumType.STRING)
-    private HeightUnit heightUnit;
+    @OneToOne(mappedBy = "userProfile", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Habits habits;
 
-    private Double weightKg;
-    private Integer age;
+    @OneToOne(mappedBy = "userProfile", cascade = CascadeType.ALL)
+    private MedicalHistory medicalHistory;
 
-    // manually or map
-    private String location;
+    @OneToMany(mappedBy = "userProfile", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Period> periods;
+
+    private String address;
 }

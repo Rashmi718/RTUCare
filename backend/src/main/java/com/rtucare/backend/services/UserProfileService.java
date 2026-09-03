@@ -6,6 +6,7 @@ import com.rtucare.backend.DTO.response.MedicalHistoryResponseDTO;
 import com.rtucare.backend.DTO.response.UserProfileResponseDTO;
 import com.rtucare.backend.DTO.response.UserProfileUpdateResponseDTO;
 import com.rtucare.backend.DTO.response.UserProfileViewDTO;
+import com.rtucare.backend.entity.PhysicalStatus;
 import com.rtucare.backend.entity.UserProfile;
 import com.rtucare.backend.enums.HeightUnit;
 import com.rtucare.backend.exception.ResourceNotFoundException;
@@ -41,21 +42,25 @@ public class UserProfileService {
 
         UserProfile userProfile = new UserProfile();
         userProfile.setUser(user);
-        userProfile.setHeightCm(toCm(dto.getHeight(), dto.getUnit()));
-        userProfile.setHeightUnit(dto.getUnit());
-        userProfile.setWeightKg(dto.getWeightKg());
-        userProfile.setAge(dto.getAge());
-        userProfile.setLocation(dto.getLocation());
+
+        PhysicalStatus physicalStatus = new PhysicalStatus();
+        physicalStatus.setUserProfile(userProfile);
+        physicalStatus.setHeightCm(toCm(dto.getHeight(), dto.getUnit()));
+        physicalStatus.setHeightUnit(dto.getUnit());
+        physicalStatus.setWeightKg(dto.getWeightKg());
+        physicalStatus.setAge(dto.getAge());
+        physicalStatus.setLocation(dto.getLocation());
+        userProfile.setPhysicalStatus(physicalStatus);
 
         UserProfile saved = userProfileRepository.save(userProfile);
         logger.info("Profile created successfully with id: {}", saved.getId());
-        return toDTO(saved, saved.getHeightUnit());
+        return toDTO(saved);
     }
 
     public UserProfileResponseDTO getProfile(long userId) {
         UserProfile profile = userProfileRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Profile not found for user id: " + userId));
-        return toDTO(profile, profile.getHeightUnit());
+        return toDTO(profile);
     }
 
     public UserProfileViewDTO getProfileView(long userId) {
@@ -72,9 +77,12 @@ public class UserProfileService {
         return unit == HeightUnit.FT ? heightCm / CM_PER_FT : heightCm;
     }
 
-    private UserProfileResponseDTO toDTO(UserProfile profile, HeightUnit displayUnit) {
-        return new UserProfileResponseDTO(profile.getId(), profile.getUser().getId(), fromCm(profile.getHeightCm(), displayUnit),
-                displayUnit, profile.getWeightKg(), profile.getAge(), profile.getLocation());
+    private UserProfileResponseDTO toDTO(UserProfile profile) {
+        PhysicalStatus ps = profile.getPhysicalStatus();
+        HeightUnit displayUnit = ps.getHeightUnit();
+        return new UserProfileResponseDTO(profile.getId(), profile.getUser().getId(),
+                fromCm(ps.getHeightCm(), displayUnit), displayUnit, ps.getWeightKg(),
+                ps.getAge(), ps.getLocation());
     }
 
     public UserProfileUpdateResponseDTO updateProfile(long userId, UserProfileUpdateDTO dto) {
@@ -82,20 +90,29 @@ public class UserProfileService {
         UserProfile userProfile = userProfileRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Profile not found for user id: " + userId));
 
-        userProfile.setHeightCm(toCm(dto.getHeight(), dto.getUnit()));
-        userProfile.setHeightUnit(dto.getUnit());
-        userProfile.setWeightKg(dto.getWeightKg());
-        userProfile.setAge(dto.getAge());
-        userProfile.setLocation(dto.getLocation());
+        PhysicalStatus physicalStatus = userProfile.getPhysicalStatus();
+        if (physicalStatus == null) {
+            physicalStatus = new PhysicalStatus();
+            physicalStatus.setUserProfile(userProfile);
+            userProfile.setPhysicalStatus(physicalStatus);
+        }
+
+        physicalStatus.setHeightCm(toCm(dto.getHeight(), dto.getUnit()));
+        physicalStatus.setHeightUnit(dto.getUnit());
+        physicalStatus.setWeightKg(dto.getWeightKg());
+        physicalStatus.setAge(dto.getAge());
+        physicalStatus.setLocation(dto.getLocation());
 
         UserProfile updated = userProfileRepository.save(userProfile);
         logger.info("Profile updated successfully with id: {}", updated.getId());
-        return toUpdateDTO(updated, updated.getHeightUnit());
+        return toUpdateDTO(updated);
     }
 
-    private UserProfileUpdateResponseDTO toUpdateDTO(UserProfile profile, HeightUnit displayUnit) {
+    private UserProfileUpdateResponseDTO toUpdateDTO(UserProfile profile) {
+        PhysicalStatus ps = profile.getPhysicalStatus();
+        HeightUnit displayUnit = ps.getHeightUnit();
         return new UserProfileUpdateResponseDTO(profile.getId(), profile.getUser().getId(),
-                fromCm(profile.getHeightCm(), displayUnit), displayUnit, profile.getWeightKg(),
-                profile.getAge(), profile.getLocation());
+                fromCm(ps.getHeightCm(), displayUnit), displayUnit, ps.getWeightKg(),
+                ps.getAge(), ps.getLocation());
     }
 }

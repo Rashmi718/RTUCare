@@ -6,11 +6,11 @@ import com.rtucare.backend.DTO.response.PeriodDTO;
 import com.rtucare.backend.DTO.response.SymptomLogDTO;
 import com.rtucare.backend.entity.Period;
 import com.rtucare.backend.entity.SymptomLog;
-import com.rtucare.backend.entity.User;
+import com.rtucare.backend.entity.UserProfile;
 import com.rtucare.backend.exception.ResourceNotFoundException;
 import com.rtucare.backend.repository.PeriodRepository;
 import com.rtucare.backend.repository.SymptomLogRepository;
-import com.rtucare.backend.repository.UserRepository;
+import com.rtucare.backend.repository.UserProfileRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -25,22 +25,22 @@ public class PeriodService {
 
     private final PeriodRepository periodRepository;
     private final SymptomLogRepository symptomLogRepository;
-    private final UserRepository userRepository;
+    private final UserProfileRepository userProfileRepository;
 
     public PeriodService(PeriodRepository periodRepository, SymptomLogRepository symptomLogRepository,
-                         UserRepository userRepository) {
+                         UserProfileRepository userProfileRepository) {
         this.periodRepository = periodRepository;
         this.symptomLogRepository = symptomLogRepository;
-        this.userRepository = userRepository;
+        this.userProfileRepository = userProfileRepository;
     }
 
     public PeriodDTO createPeriod(long userId, PeriodRequestDTO dto) {
         logger.info("Creating period for user id: {}", userId);
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+        UserProfile userProfile = userProfileRepository.findByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Profile not found for user id: " + userId));
 
         Period period = new Period();
-        period.setUser(user);
+        period.setUserProfile(userProfile);
         period.setStartDate(dto.getStartDate());
         period.setEndDate(dto.getEndDate());
         period.setFlowIntensity(dto.getFlowIntensity());
@@ -53,7 +53,9 @@ public class PeriodService {
     }
 
     public List<PeriodDTO> getPeriods(long userId) {
-        return periodRepository.findByUserId(userId).stream().map(this::toDTO).toList();
+        UserProfile userProfile = userProfileRepository.findByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Profile not found for user id: " + userId));
+        return periodRepository.findByUserProfileId(userProfile.getId()).stream().map(this::toDTO).toList();
     }
 
     public PeriodDTO getPeriod(long id) {
@@ -88,7 +90,7 @@ public class PeriodService {
         Period period = findPeriod(periodId);
 
         SymptomLog symptomLog = new SymptomLog();
-        symptomLog.setUser(period.getUser());
+        symptomLog.setUser(period.getUserProfile().getUser());
         symptomLog.setPeriod(period);
         symptomLog.setDate(dto.getDate());
         symptomLog.setSymptom(dto.getSymptom());
@@ -135,7 +137,7 @@ public class PeriodService {
     }
 
     private PeriodDTO toDTO(Period period) {
-        return new PeriodDTO(period.getId(), period.getUser().getId(), period.getStartDate(), period.getEndDate(),
+        return new PeriodDTO(period.getId(), period.getUserProfile().getUser().getId(), period.getStartDate(), period.getEndDate(),
                 period.getFlowIntensity(),
                 period.getSymptoms() == null ? List.of() : period.getSymptoms(), period.getNotes());
     }

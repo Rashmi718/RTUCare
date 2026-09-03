@@ -6,15 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Entity
-@Table(name = "medical_history")
+@Table(name = "habits")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MedicalHistory {
+public class Habits {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,11 +23,20 @@ public class MedicalHistory {
     private UserProfile userProfile;
 
     @Column(nullable = false)
-    private Boolean hasMedicalIssues;
+    private Boolean smoker;
 
-    @OneToMany(mappedBy = "medicalHistory", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Disease> diseases;
+    @Column(nullable = false)
+    private Boolean alcoholConsumer;
 
-    @OneToMany(mappedBy = "medicalHistory", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Medication> medications;
+    @Column(nullable = false)
+    private Boolean goodSleep;
+
+    @Column(nullable = false)
+    private Boolean balancedDiet;
+
+    @Column(nullable = false)
+    private Boolean exercise;
+
+    @Column(nullable = false)
+    private Boolean consumeExcessiveDrugs;
 }

@@ -1,20 +1,19 @@
 package com.rtucare.backend.entity;
 
+import com.rtucare.backend.enums.HeightUnit;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Entity
-@Table(name = "medical_history")
+@Table(name = "physical_status")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MedicalHistory {
+public class PhysicalStatus {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,12 +23,13 @@ public class MedicalHistory {
     @JoinColumn(name = "user_profile_id", nullable = false, unique = true)
     private UserProfile userProfile;
 
-    @Column(nullable = false)
-    private Boolean hasMedicalIssues;
+    private Double heightCm;
 
-    @OneToMany(mappedBy = "medicalHistory", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Disease> diseases;
+    @Enumerated(EnumType.STRING)
+    private HeightUnit heightUnit;
 
-    @OneToMany(mappedBy = "medicalHistory", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Medication> medications;
+    private Double weightKg;
+    private Integer age;
+
+    private String location;
 }

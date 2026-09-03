@@ -24,5 +24,6 @@ public class Medication {
     private String name;
     private String dosage;
     private Integer durationMonths;
+    private Boolean isOngoing;
 
 }

@@ -22,8 +22,8 @@ public class Period {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "user_profile_id", nullable = false)
+    private UserProfile userProfile;
 
     @Column(nullable = false)
     private LocalDate startDate;

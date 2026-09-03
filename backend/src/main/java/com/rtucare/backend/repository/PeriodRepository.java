@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface PeriodRepository extends JpaRepository<Period, Long> {
 
-    List<Period> findByUserId(Long userId);
+    List<Period> findByUserProfileId(Long userProfileId);
 }

@@ -14,13 +14,10 @@ import java.util.List;
 @AllArgsConstructor
 public class MedicalHistoryRequestDTO {
 
-    @NotNull(message = "Smoker field is required")
-    private Boolean smoker;
+    @NotNull(message = "Medical issues field is required")
+    private Boolean hasMedicalIssues;
 
-    @NotNull(message = "Alcohol consumer field is required")
-    private Boolean alcoholConsumer;
-
-    private List<String> diseases;
+    private List<DiseaseRequestDTO> diseases;
 
     private List<MedicationRequestDTO> medications;
 }

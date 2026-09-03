@@ -18,4 +18,6 @@ public class MedicationRequestDTO {
     private String dosage;
 
     private Integer durationMonths;
+
+    private Boolean isOngoing;
 }

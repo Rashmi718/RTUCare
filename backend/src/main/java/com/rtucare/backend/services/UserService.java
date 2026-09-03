@@ -72,6 +72,14 @@ public class UserService {
         return users.stream().map(this::toDTO).toList();
     }
 
+    public void deleteUser(long id) {
+        logger.info("Deleting user with id: {}", id);
+        User u = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+        userRepository.delete(u);
+        logger.info("User deleted successfully with id: {}", id);
+    }
+
     public UserResponseDTO toDTO(User user) {
         return new UserResponseDTO(user.getId(), user.getName(), user.getEmail());
     }

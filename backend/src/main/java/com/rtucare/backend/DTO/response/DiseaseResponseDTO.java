@@ -5,21 +5,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MedicationResponseDTO {
+public class DiseaseResponseDTO {
 
     private Long id;
-
     private Long medicalHistoryId;
-
     private String name;
-
-    private String dosage;
-
-    private Integer durationMonths;
-
-    private Boolean isOngoing;
+    private LocalDate diagnoseDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private Boolean stillOngoing;
+    private MedicationResponseDTO medication;
 }

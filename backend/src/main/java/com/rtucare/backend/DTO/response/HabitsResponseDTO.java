@@ -5,17 +5,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MedicalHistoryResponseDTO {
+public class HabitsResponseDTO {
 
     private Long id;
     private Long userId;
-    private Boolean hasMedicalIssues;
-    private List<DiseaseResponseDTO> diseases;
-    private List<MedicationResponseDTO> medications;
+    private Boolean smoker;
+    private Boolean alcoholConsumer;
+    private Boolean goodSleep;
+    private Boolean balancedDiet;
+    private Boolean exercise;
+    private Boolean consumeExcessiveDrugs;
 }
