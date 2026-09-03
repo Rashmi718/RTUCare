@@ -33,4 +33,8 @@ build/
 .vscode/
 
 ### Environment Variables ###
+<<<<<<< Updated upstream
 src/main/java/com/rtucare/backend/.env
+=======
+.env
+>>>>>>> Stashed changes
