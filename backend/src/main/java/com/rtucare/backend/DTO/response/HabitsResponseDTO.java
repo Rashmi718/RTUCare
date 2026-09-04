@@ -1,5 +1,6 @@
 package com.rtucare.backend.DTO.response;
 
+import com.rtucare.backend.entity.Habits;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,4 +20,10 @@ public class HabitsResponseDTO {
     private Boolean balancedDiet;
     private Boolean exercise;
     private Boolean consumeExcessiveDrugs;
+
+    public static HabitsResponseDTO from(Habits habits) {
+        return new HabitsResponseDTO(habits.getId(), habits.getUserProfile().getUser().getId(),
+                habits.getSmoker(), habits.getAlcoholConsumer(), habits.getGoodSleep(),
+                habits.getBalancedDiet(), habits.getExercise(), habits.getConsumeExcessiveDrugs());
+    }
 }

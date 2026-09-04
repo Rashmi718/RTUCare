@@ -47,7 +47,7 @@ public class HabitsService {
 
         Habits saved = habitsRepository.save(habits);
         logger.info("Habits created successfully with id: {}", saved.getId());
-        return toDTO(saved);
+        return HabitsResponseDTO.from(saved);
     }
 
     public HabitsResponseDTO getHabits(long userId) {
@@ -55,7 +55,7 @@ public class HabitsService {
                 .orElseThrow(() -> new ResourceNotFoundException("Profile not found for user id: " + userId));
         Habits habits = habitsRepository.findByUserProfileId(userProfile.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Habits not found for user id: " + userId));
-        return toDTO(habits);
+        return HabitsResponseDTO.from(habits);
     }
 
     @Transactional
@@ -75,12 +75,6 @@ public class HabitsService {
 
         Habits updated = habitsRepository.save(habits);
         logger.info("Habits updated successfully with id: {}", updated.getId());
-        return toDTO(updated);
-    }
-
-    private HabitsResponseDTO toDTO(Habits habits) {
-        return new HabitsResponseDTO(habits.getId(), habits.getUserProfile().getUser().getId(),
-                habits.getSmoker(), habits.getAlcoholConsumer(), habits.getGoodSleep(),
-                habits.getBalancedDiet(), habits.getExercise(), habits.getConsumeExcessiveDrugs());
+        return HabitsResponseDTO.from(updated);
     }
 }

@@ -47,7 +47,7 @@ public class PeriodService {
         period.setSymptoms(dto.getSymptoms() == null ? new ArrayList<>() : dto.getSymptoms());
         period.setNotes(dto.getNotes());
 
-        PeriodDTO result = toDTO(periodRepository.save(period));
+        PeriodDTO result = PeriodDTO.from(periodRepository.save(period));
         logger.info("Period created successfully with id: {}", result.getId());
         return result;
     }
@@ -55,11 +55,11 @@ public class PeriodService {
     public List<PeriodDTO> getPeriods(long userId) {
         UserProfile userProfile = userProfileRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Profile not found for user id: " + userId));
-        return periodRepository.findByUserProfileId(userProfile.getId()).stream().map(this::toDTO).toList();
+        return periodRepository.findByUserProfileId(userProfile.getId()).stream().map(PeriodDTO::from).toList();
     }
 
     public PeriodDTO getPeriod(long id) {
-        return toDTO(findPeriod(id));
+        return PeriodDTO.from(findPeriod(id));
     }
 
     public PeriodDTO updatePeriod(long id, PeriodRequestDTO dto) {
@@ -74,7 +74,7 @@ public class PeriodService {
         }
         period.setNotes(dto.getNotes());
 
-        return toDTO(periodRepository.save(period));
+        return PeriodDTO.from(periodRepository.save(period));
     }
 
     public void deletePeriod(long id) {
@@ -98,14 +98,14 @@ public class PeriodService {
         symptomLog.setMood(dto.getMood());
         symptomLog.setNotes(dto.getNotes());
 
-        SymptomLogDTO result = toSymptomDTO(symptomLogRepository.save(symptomLog));
+        SymptomLogDTO result = SymptomLogDTO.from(symptomLogRepository.save(symptomLog));
         logger.info("Symptom added successfully with id: {}", result.getId());
         return result;
     }
 
     public List<SymptomLogDTO> getSymptoms(long periodId) {
         findPeriod(periodId);
-        return symptomLogRepository.findByPeriodId(periodId).stream().map(this::toSymptomDTO).toList();
+        return symptomLogRepository.findByPeriodId(periodId).stream().map(SymptomLogDTO::from).toList();
     }
 
     public SymptomLogDTO updateSymptom(long symptomId, SymptomLogRequestDTO dto) {
@@ -119,7 +119,7 @@ public class PeriodService {
         symptomLog.setMood(dto.getMood());
         symptomLog.setNotes(dto.getNotes());
 
-        return toSymptomDTO(symptomLogRepository.save(symptomLog));
+        return SymptomLogDTO.from(symptomLogRepository.save(symptomLog));
     }
 
     public void deleteSymptom(long symptomId) {
@@ -134,18 +134,5 @@ public class PeriodService {
     private Period findPeriod(long id) {
         return periodRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Period not found with id: " + id));
-    }
-
-    private PeriodDTO toDTO(Period period) {
-        return new PeriodDTO(period.getId(), period.getUserProfile().getUser().getId(), period.getStartDate(), period.getEndDate(),
-                period.getFlowIntensity(),
-                period.getSymptoms() == null ? List.of() : period.getSymptoms(), period.getNotes());
-    }
-
-    private SymptomLogDTO toSymptomDTO(SymptomLog symptomLog) {
-        return new SymptomLogDTO(symptomLog.getId(), symptomLog.getUser().getId(),
-                symptomLog.getPeriod() == null ? null : symptomLog.getPeriod().getId(),
-                symptomLog.getDate(), symptomLog.getSymptom(), symptomLog.getSeverity(),
-                symptomLog.getMood(), symptomLog.getNotes());
     }
 }

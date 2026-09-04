@@ -1,5 +1,6 @@
 package com.rtucare.backend.DTO.response;
 
+import com.rtucare.backend.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,4 +14,8 @@ public class UserResponseDTO {
     private Long id;
     private String name;
     private String email;
+
+    public static UserResponseDTO from(User user) {
+        return new UserResponseDTO(user.getId(), user.getName(), user.getEmail());
+    }
 }

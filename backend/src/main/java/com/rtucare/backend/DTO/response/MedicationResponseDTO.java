@@ -1,5 +1,6 @@
 package com.rtucare.backend.DTO.response;
 
+import com.rtucare.backend.entity.Medication;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,4 +23,10 @@ public class MedicationResponseDTO {
     private Integer durationMonths;
 
     private Boolean isOngoing;
+
+    public static MedicationResponseDTO from(Medication medication) {
+        return new MedicationResponseDTO(medication.getId(), medication.getMedicalHistory().getId(),
+                medication.getName(), medication.getDosage(), medication.getDurationMonths(),
+                medication.getIsOngoing());
+    }
 }

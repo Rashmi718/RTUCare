@@ -3,9 +3,7 @@ package com.rtucare.backend.services;
 import com.rtucare.backend.DTO.request.DiseaseRequestDTO;
 import com.rtucare.backend.DTO.request.MedicalHistoryRequestDTO;
 import com.rtucare.backend.DTO.request.MedicationRequestDTO;
-import com.rtucare.backend.DTO.response.DiseaseResponseDTO;
 import com.rtucare.backend.DTO.response.MedicalHistoryResponseDTO;
-import com.rtucare.backend.DTO.response.MedicationResponseDTO;
 import com.rtucare.backend.entity.Disease;
 import com.rtucare.backend.entity.MedicalHistory;
 import com.rtucare.backend.entity.Medication;
@@ -54,7 +52,7 @@ public class MedicalHistoryService {
             medicalHistory.setMedications(toMedications(dto.getMedications(), medicalHistory));
         }
 
-        MedicalHistoryResponseDTO result = toDTO(medicalHistoryRepository.save(medicalHistory));
+        MedicalHistoryResponseDTO result = MedicalHistoryResponseDTO.from(medicalHistoryRepository.save(medicalHistory));
         logger.info("Medical history created successfully with id: {}", result.getId());
         return result;
     }
@@ -62,7 +60,7 @@ public class MedicalHistoryService {
     public MedicalHistoryResponseDTO getMedicalHistory(long userId) {
         MedicalHistory medicalHistory = medicalHistoryRepository.findByUserProfileUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Medical history not found for user id: " + userId));
-        return toDTO(medicalHistory);
+        return MedicalHistoryResponseDTO.from(medicalHistory);
     }
 
     @Transactional
@@ -98,7 +96,7 @@ public class MedicalHistoryService {
             medicalHistory.setMedications(null);
         }
 
-        MedicalHistoryResponseDTO result = toDTO(medicalHistoryRepository.save(medicalHistory));
+        MedicalHistoryResponseDTO result = MedicalHistoryResponseDTO.from(medicalHistoryRepository.save(medicalHistory));
         logger.info("Medical history updated successfully with id: {}", result.getId());
         return result;
     }
@@ -137,28 +135,5 @@ public class MedicalHistoryService {
         medication.setIsOngoing(m.getIsOngoing());
         medication.setMedicalHistory(medicalHistory);
         return medication;
-    }
-
-    public MedicalHistoryResponseDTO toDTO(MedicalHistory medicalHistory) {
-        List<DiseaseResponseDTO> diseases = medicalHistory.getDiseases() == null ? List.of()
-                : medicalHistory.getDiseases().stream().map(this::toDiseaseDTO).toList();
-        List<MedicationResponseDTO> medications = medicalHistory.getMedications() == null ? List.of()
-                : medicalHistory.getMedications().stream().map(m ->
-                        new MedicationResponseDTO(m.getId(), m.getMedicalHistory().getId(), m.getName(), m.getDosage(), m.getDurationMonths(), m.getIsOngoing()))
-                .toList();
-        return new MedicalHistoryResponseDTO(medicalHistory.getId(), medicalHistory.getUserProfile().getUser().getId(),
-                medicalHistory.getHasMedicalIssues(), diseases, medications);
-    }
-
-    private DiseaseResponseDTO toDiseaseDTO(Disease disease) {
-        MedicationResponseDTO medicationDTO = null;
-        if (disease.getMedication() != null) {
-            Medication m = disease.getMedication();
-            medicationDTO = new MedicationResponseDTO(m.getId(), m.getMedicalHistory().getId(),
-                    m.getName(), m.getDosage(), m.getDurationMonths(), m.getIsOngoing());
-        }
-        return new DiseaseResponseDTO(disease.getId(), disease.getMedicalHistory().getId(),
-                disease.getName(), disease.getDiagnoseDate(), disease.getStartDate(),
-                disease.getEndDate(), disease.getStillOngoing(), medicationDTO);
     }
 }

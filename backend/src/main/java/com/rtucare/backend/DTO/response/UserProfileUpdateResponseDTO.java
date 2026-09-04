@@ -1,5 +1,7 @@
 package com.rtucare.backend.DTO.response;
 
+import com.rtucare.backend.entity.PhysicalStatus;
+import com.rtucare.backend.entity.UserProfile;
 import com.rtucare.backend.enums.HeightUnit;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,4 +21,16 @@ public class UserProfileUpdateResponseDTO {
     private Double weightKg;
     private Integer age;
     private String location;
+
+    public static UserProfileUpdateResponseDTO from(UserProfile profile) {
+        PhysicalStatus ps = profile.getPhysicalStatus();
+        HeightUnit displayUnit = ps.getHeightUnit();
+        return new UserProfileUpdateResponseDTO(profile.getId(), profile.getUser().getId(),
+                fromCm(ps.getHeightCm(), displayUnit), displayUnit, ps.getWeightKg(),
+                ps.getAge(), ps.getLocation());
+    }
+
+    private static double fromCm(double heightCm, HeightUnit unit) {
+        return unit == HeightUnit.FT ? heightCm / 30.48 : heightCm;
+    }
 }

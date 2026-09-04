@@ -36,13 +36,12 @@ public class UserService {
         u.setPassword(passwordEncoder.encode(dto.getPassword()));
         userRepository.save(u);
         logger.info("User created successfully with id: {}", u.getId());
-        return toDTO(u);
+        return UserResponseDTO.from(u);
     }
 
     public UserLoginResponseDTO login(UserLoginDTO dto) {
         logger.info("Login attempt for email: {}", dto.getEmail());
-        User u = userRepository.findByEmail(dto.getEmail())
-                .orElseThrow(() -> new InvalidCredentialsException("Invalid email or password"));
+        User u = userRepository.findByEmail(dto.getEmail()).orElseThrow(() -> new InvalidCredentialsException("Invalid email or password"));
         if (!passwordEncoder.matches(dto.getPassword(), u.getPassword())) {
             throw new InvalidCredentialsException("Invalid email or password");
         }
@@ -64,12 +63,12 @@ public class UserService {
     public UserResponseDTO getUser(long id) {
         User u = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
-        return toDTO(u);
+        return UserResponseDTO.from(u);
     }
 
     public List<UserResponseDTO> getAllUser() {
         List<User> users = userRepository.findAll();
-        return users.stream().map(this::toDTO).toList();
+        return users.stream().map(UserResponseDTO::from).toList();
     }
 
     public void deleteUser(long id) {
@@ -78,9 +77,5 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
         userRepository.delete(u);
         logger.info("User deleted successfully with id: {}", id);
-    }
-
-    public UserResponseDTO toDTO(User user) {
-        return new UserResponseDTO(user.getId(), user.getName(), user.getEmail());
     }
 }
